@@ -1,0 +1,42 @@
+# https://argoproj.github.io/argo-cd/operator-manual/application.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: xrm-aws-sandbox
+  namespace: argocd
+  # Add a this finalizer ONLY if you want these to cascade delete.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nicolas-g/crossplane-samples.git
+    targetRevision: HEAD
+    path: infra/aws
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  # Sync policy
+  syncPolicy:
+    # automated sync by default retries failed attempts 5 times with following delays between attempts
+    # ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+    automated:
+      # prune: Specifies if resources should be pruned during auto-syncing ( false by default ).
+      prune: true
+      # selHeal: Specifies if partial app sync should be executed when resources are changed only
+      # in target Kubernetes cluster and no git change detected ( false by default ).
+      selfHeal: true
+      # allowEmpty: Allows deleting all application resources during automatic syncing ( false by default ).
+      allowEmpty: false
+    syncOptions:  # Sync options which modifies sync behavior
+    - CreateNamespace=true
+    - PrunePropagationPolicy=foreground # Supported policies are background, foreground and orphan.
+    - PruneLast=true # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+    # The retry feature is available since v1.7
+    retry:
+      limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy

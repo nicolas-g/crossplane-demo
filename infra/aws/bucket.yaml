@@ -1,0 +1,49 @@
+---
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: ng-bucket
+  annotations:
+    # This will be the actual bucket name. It must be globally unique, so you
+    # probably want to change it before trying to apply this example.
+    crossplane.io/external-name: tehcops-demo-bucket-xyz123
+spec:
+  forProvider:
+    acl: private
+    locationConstraint: us-east-1
+    publicAccessBlockConfiguration:
+      blockPublicPolicy: true
+    accelerateConfiguration:
+      status: Suspended #Enabled
+    versioningConfiguration:
+      status: Suspended #Enabled
+    tagging:
+      tagSet:
+        - key: Team
+          value: TechOps
+        - key: ManagedBy
+          value: crossplane
+    objectLockEnabledForBucket: false
+    serverSideEncryptionConfiguration:
+      rules:
+        - applyServerSideEncryptionByDefault:
+            sseAlgorithm: AES256
+    corsConfiguration:
+      corsRules:
+        - allowedMethods:
+            - "GET"
+          allowedOrigins:
+            - "*"
+          allowedHeaders:
+            - "*"
+          exposeHeaders:
+            - "x-amz-server-side-encryption"
+    lifecycleConfiguration:
+      rules:
+        - status: Enabled
+          filter:
+            prefix: "ola/"
+          expiration:
+            days: 15
+  providerConfigRef:
+    name: aws-huxdev

@@ -1,5 +1,20 @@
 # Crossplane POC
 
+## Table of Contents
+
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+3. [Check Crossplane Status](#check-crossplane-status)
+4. [Access](#access)
+5. [GCP](#gcp)
+6. [AWS](#aws)
+7. [GCP Deployment](#gcp-deployment)
+8. [Crossplane GCP Provider](#crossplane-gcp-provider)
+9. [Crossplane GCP ProviderConfig](#crossplane-gcp-providerconfig)
+10. [Provision GCP resources with Crossplane](#provision-gcp-resources-with-crossplane)
+11. [Troubleshooting](#troubleshooting)
+12. [GCP Service Account Key](#gcp-service-account-key)
+
 ## Requirements
 - A kubernetes cluster (can also be minikube, kind, k3d etc..)
 - Access to GCP
@@ -168,7 +183,7 @@ kubectl apply -f infra/gcp
 kubectl get manage
 kubectl get manage get cluster
 kubectl get manage get nodepool
-kubectl -n crossplane-system logs -l  app=crossplane
+kubectl -n crossplane-system logs -l app=crossplane
 kubectl -n crossplane-system logs -l pkg.crossplane.io/provider=provider-gcp
 kubectl -n crossplane-system logs -l app=crossplane-rbac-manager
 ```

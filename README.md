@@ -125,7 +125,7 @@ export KUBERENTES_CLUSTER_SUBNET=$NETWORK_SUBNET_NAME
 Source your variables and check if the rendered result looks good:
 ```
 source < env-gcp-values.txt
-envsubst < env-subst-config > test-rendered.txt
+envsubst < env-subst-config-test > test-rendered.txt
 ```
 
 Create the rendered templates manifrest by running `envsubst` command

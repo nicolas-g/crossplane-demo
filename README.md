@@ -1,5 +1,13 @@
 # Crossplane POC
 
+## Requirements
+- A kubernetes cluster (can also be minikube, kind, k3d etc..)
+- Access to GCP
+- gcloud cli
+- helm cli
+- kubectl cli
+- envsubst (optional)
+
 ## Installation
 
 ```
@@ -14,19 +22,31 @@ helm list -n crossplane-system
 kubectl get all -n crossplane-system
 ```
 
-## API Access
+## Access
 
 ### GCP
-We need a Service Account key but in this example we'll use a temporary personal user account token as a key
+
+For this demo, we will authenticate with our user account to GCP and use the temporary Application Default personal token.
+
+:warning: This is not a proper way to configure crossplane in a Production environment (or even Development). Instead, you should use a Service Account Key or run crossplane from a Cluster where the crossplane Pod can use a Service Account with enough privilege to provision the resources you want.
+
+Authenticate to GCP and setup your environment
 ```
 gcloud auth login
 gcloud config configurations create genesys-dev
 gcloud config set project us-gcp-ame-con-bf9-npd-1
 gcloud config set account usa-ngeorgakopoulos@deloitte.com
-
-
 gcloud auth application-default login
-kubectl create secret generic gcp-creds -n crossplane-system --from-file=creds=/Users/ngeorgakopoulos/.config/gcloud/legacy_credentials/usa-ngeorgakopoulos@deloitte.com/adc.json
+```
+
+Once you have run the `application-default login` command, a token will be created and saved under your home directory under the following path (MacOS):
+```
+/Users/{{ USER }}/.config/gcloud/legacy_credentials/{{ GCP_USER_EMAIL))/adc.json
+```
+
+You can then create a Kubernetes secret with your token by running
+```
+kubectl create secret generic gcp-creds -n crossplane-system --from-file=creds=/Users/{{ USER }}/.config/gcloud/legacy_credentials/{{ GCP_USER_EMAIL))/adc.json
 ```
 
 ### AWS
@@ -100,8 +120,6 @@ gcp-genesys-dev   us-gcp-ame-con-bf9-npd-1   31s
 
 ## Provision GCP resources with Crossplane
 
-### update
-
 
 Create your `env-gcp-values.txt` file:
 ```
@@ -146,20 +164,16 @@ kubectl apply -f infra/gcp
 
 ## Troubleshooting
 
-
 ```
 kubectl get manage
 kubectl get manage get cluster
 kubectl get manage get nodepool
-
 kubectl -n crossplane-system logs -l  app=crossplane
-
 kubectl -n crossplane-system logs -l pkg.crossplane.io/provider=provider-gcp
-
 kubectl -n crossplane-system logs -l app=crossplane-rbac-manager
 ```
 
-## Outro
+## GCP Service Account Key
 
 ```
 # replace this with your own gcp project id and the name of the service account

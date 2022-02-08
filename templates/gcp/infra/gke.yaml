@@ -1,0 +1,70 @@
+---
+apiVersion: container.gcp.crossplane.io/v1beta2
+#kind: GKECluster
+kind: Cluster
+metadata:
+  name: $KUBERENTES_CLUSTER_NAME
+spec:
+  forProvider:
+    initialClusterVersion: "latest" # "1.18"
+    location: us-west2-a
+    # masterAuth:
+    #   # setting this master auth user name enables basic auth so that a client (e.g.,
+    #   # provider-helm), can connect with the generated kubeconfig from the connection secret
+    #   username: admin
+    networkConfig:
+      enableIntraNodeVisibility: true
+    privateClusterConfig:
+      enablePrivateEndpoint: true
+      enablePrivateNodes: true
+      masterIpv4CidrBlock: 172.16.0.16/28
+    loggingService: logging.googleapis.com/kubernetes
+    monitoringService: monitoring.googleapis.com/kubernetes
+    addonsConfig:
+      gcePersistentDiskCsiDriverConfig:
+        enabled: true
+    network: $KUBERENTES_CLUSTER_NETWORK
+    subnetwork: $KUBERENTES_CLUSTER_SUBNET
+  # writeConnectionSecretToRef:
+  #   namespace: default
+  #   name: gke-conn
+  providerConfigRef:
+    name: $PROVIDER_CONFIG_NAME
+---
+apiVersion: container.gcp.crossplane.io/v1beta1
+kind: NodePool
+metadata:
+  name: $KUBERENTES_WORKER_NODE_NAME
+spec:
+  forProvider:
+    locations:
+      - "us-west2-a"
+    clusterRef:
+      name: $KUBERENTES_CLUSTER_NAME
+    initialNodeCount: 1
+    autoscaling:
+      autoprovisioned: false
+      enabled: true
+      minNodeCount: 1
+      maxNodeCount: 3
+    config:
+      preemptible: true
+      machineType: n1-standard-1
+      sandboxConfig:
+        type: "GVISOR"
+      diskSizeGb: 120
+      diskType: pd-ssd
+      imageType: cos_containerd
+      labels:
+        test-label: crossplane-created
+      oauthScopes:
+        - "https://www.googleapis.com/auth/devstorage.read_only"
+        - "https://www.googleapis.com/auth/logging.write"
+        - "https://www.googleapis.com/auth/monitoring"
+        - "https://www.googleapis.com/auth/servicecontrol"
+        - "https://www.googleapis.com/auth/service.management.readonly"
+        - "https://www.googleapis.com/auth/trace.append"
+    management:
+      autoUpgrade: false
+  providerConfigRef:
+    name: $PROVIDER_CONFIG_NAME

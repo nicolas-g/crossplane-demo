@@ -1,0 +1,31 @@
+---
+apiVersion: compute.gcp.crossplane.io/v1beta1
+kind: Network
+metadata:
+  name: $NETWORK_NAME
+spec:
+  forProvider:
+    autoCreateSubnetworks: false
+    routingConfig:
+      routingMode: REGIONAL
+  providerConfigRef:
+    name: $PROVIDER_CONFIG_NAME
+---
+apiVersion: compute.gcp.crossplane.io/v1beta1
+kind: Subnetwork
+metadata:
+  name: $NETWORK_SUBNET_NAME
+spec:
+  forProvider:
+    region: us-west2
+    ipCidrRange: "192.168.0.0/24" #"10.0.0.0/20"
+    privateIpGoogleAccess: true
+    secondaryIpRanges:
+      - rangeName: pods
+        ipCidrRange: 10.0.0.0/14
+      - rangeName: services
+        ipCidrRange: 10.4.0.0/19
+    networkRef:
+      name: $NETWORK_NAME
+  providerConfigRef:
+    name: $PROVIDER_CONFIG_NAME

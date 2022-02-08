@@ -1,0 +1,15 @@
+export PROVIDER_NAME=provider-gcp
+export PROVIDER_VERSION="v0.19.0"
+
+export PROVIDER_CONFIG_NAME=gcp-genesys-dev
+export PROVIDER_PROJECT_ID=us-gcp-ame-con-bf9-npd-1
+
+export NETWORK_NAME="ng-network"
+export NETWORK_SUBNET_NAME="ng-subnet"
+
+export BUCKET_NAME="ng-bucket-xyz123"
+
+export KUBERENTES_CLUSTER_NAME="ng-cluster"
+export KUBERENTES_WORKER_NODE_NAME="ng-nodepool"
+export KUBERENTES_CLUSTER_NETWORK="$NETWORK_NAME"
+export KUBERENTES_CLUSTER_SUBNET="$NETWORK_SUBNET_NAME"

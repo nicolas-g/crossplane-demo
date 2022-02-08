@@ -1,0 +1,17 @@
+---
+apiVersion: storage.gcp.crossplane.io/v1alpha3
+kind: Bucket
+metadata:
+  name: $BUCKET_NAME
+  labels:
+    team: "TechOps"
+   #Remove comments to "import an existing resource crated outside of crossplane
+#  annotations:
+#    # Note that this will be the actual bucket name so it has to be globally unique/available.
+#    crossplane.io/external-name: ng-bucket-xyz123-sdfskldslfjlsdjfl2j3
+spec:
+  location: US
+  storageClass: STANDARD #REGIONAL #MULTI_REGIONAL
+  providerConfigRef:
+    name: $PROVIDER_CONFIG_NAME
+  deletionPolicy: Delete

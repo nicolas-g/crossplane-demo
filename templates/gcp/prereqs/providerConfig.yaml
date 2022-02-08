@@ -1,9 +1,9 @@
 apiVersion: gcp.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
-  name: gcp-sandbox
+  name: $PROVIDER_CONFIG_NAME
 spec:
-  projectID: us-gcp-ame-con-acb-npd-1
+  projectID: $PROVIDER_PROJECT_ID
   credentials:
     source: Secret
     secretRef:

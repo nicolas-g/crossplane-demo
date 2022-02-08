@@ -13,7 +13,8 @@
 9. [Crossplane GCP ProviderConfig](#crossplane-gcp-providerconfig)
 10. [Provision GCP resources with Crossplane](#provision-gcp-resources-with-crossplane)
 11. [Troubleshooting](#troubleshooting)
-12. [GCP Service Account Key](#gcp-service-account-key)
+12. [Links](#links)
+13. [GCP Service Account Key](#gcp-service-account-key)
 
 ## Requirements
 - A kubernetes cluster (can also be minikube, kind, k3d etc..)
@@ -48,9 +49,9 @@ For this demo, we will authenticate with our user account to GCP and use the tem
 Authenticate to GCP and setup your environment
 ```
 gcloud auth login
-gcloud config configurations create genesys-dev
-gcloud config set project us-gcp-ame-con-bf9-npd-1
-gcloud config set account usa-ngeorgakopoulos@deloitte.com
+gcloud config configurations create demo-dev
+gcloud config set project xxx-yyy-zzz 	   # <- CHANGEME
+gcloud config set account gcp-user@gmail.com # <- CHANGEME
 gcloud auth application-default login
 ```
 
@@ -130,7 +131,7 @@ confirm
 ```
 kubectl get providerconfigs.gcp.crossplane.io
 NAME              PROJECT-ID                 AGE
-gcp-genesys-dev   us-gcp-ame-con-bf9-npd-1   31s
+gcp-demo-dev   us-gcp-ame-con-bf9-npd-1   31s
 ```
 
 ## Provision GCP resources with Crossplane
@@ -187,6 +188,11 @@ kubectl -n crossplane-system logs -l app=crossplane
 kubectl -n crossplane-system logs -l pkg.crossplane.io/provider=provider-gcp
 kubectl -n crossplane-system logs -l app=crossplane-rbac-manager
 ```
+
+## Links
+
+- https://doc.crds.dev/github.com/crossplane/provider-gcp
+- https://github.com/crossplane/provider-gcp/tree/master/examples
 
 ## GCP Service Account Key
 

@@ -1,5 +1,7 @@
 # Crossplane POC
 
+This is just a demo of my Crossplane POC.
+
 ## Table of Contents
 
 1. [Requirements](#requirements)
